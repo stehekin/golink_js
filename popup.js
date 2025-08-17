@@ -50,11 +50,21 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       body: JSON.stringify(golinkData)
     })
-    .then(response => {
+    .then(async response => {
       if (response.ok) {
         alert(`Golink "go/${golinkName}" created successfully!`);
         addToRecentLinks(`go/${golinkName}`, currentUrl);
         window.close();
+      } else if (response.status === 409) {
+        const errorData = await response.json();
+        if (errorData.error === 'Golink already exists') {
+          const shouldOverwrite = confirm(`Golink "go/${golinkName}" already exists. Do you want to overwrite it?`);
+          if (shouldOverwrite) {
+            updateExistingGolink(golinkName, currentUrl);
+          }
+        } else {
+          alert('Failed to create golink. Please try again.');
+        }
       } else {
         alert('Failed to create golink. Please try again.');
       }
@@ -62,6 +72,29 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch(error => {
       console.error('Error creating golink:', error);
       alert('Error creating golink. Please make sure the golink service is running.');
+    });
+  }
+
+  function updateExistingGolink(golinkName, currentUrl) {
+    fetch(`http://localhost:3030/golinks/go/${golinkName}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url: currentUrl })
+    })
+    .then(response => {
+      if (response.ok) {
+        alert(`Golink "go/${golinkName}" updated successfully!`);
+        addToRecentLinks(`go/${golinkName}`, currentUrl);
+        window.close();
+      } else {
+        alert('Failed to update golink. Please try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating golink:', error);
+      alert('Error updating golink. Please make sure the golink service is running.');
     });
   }
 
