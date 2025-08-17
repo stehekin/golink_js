@@ -1,38 +1,67 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('searchInput');
-  const goButton = document.getElementById('goButton');
+  const golinkNameInput = document.getElementById('golinkName');
+  const currentUrlInput = document.getElementById('currentUrl');
+  const addGolinkForm = document.getElementById('addGolinkForm');
+  const createGolinkBtn = document.getElementById('createGolinkBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
   const recentLinksContainer = document.getElementById('recentLinks');
-  const addLinkBtn = document.getElementById('addLinkBtn');
-  const manageLinkBtn = document.getElementById('manageLinkBtn');
 
+  loadCurrentUrl();
   loadRecentLinks();
 
-  searchInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      handleGoLink();
-    }
+  addGolinkForm.addEventListener('submit', handleCreateGolink);
+  cancelBtn.addEventListener('click', function() {
+    window.close();
   });
 
-  goButton.addEventListener('click', handleGoLink);
-  addLinkBtn.addEventListener('click', showAddLinkForm);
-  manageLinkBtn.addEventListener('click', showManageLinks);
+  function loadCurrentUrl() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      if (tabs[0]) {
+        currentUrlInput.value = tabs[0].url;
+      }
+    });
+  }
 
-  function handleGoLink() {
-    const input = searchInput.value.trim();
-    if (!input) return;
+  function handleCreateGolink(e) {
+    e.preventDefault();
+    
+    const golinkName = golinkNameInput.value.trim();
+    const currentUrl = currentUrlInput.value.trim();
+    
+    if (!golinkName || !currentUrl) {
+      alert('Please enter a golink name.');
+      return;
+    }
 
-    chrome.storage.sync.get(['golinks'], function(result) {
-      const golinks = result.golinks || {};
-      
-      if (golinks[input]) {
-        chrome.tabs.create({ url: golinks[input] });
-        addToRecentLinks(input, golinks[input]);
+    if (!/^[a-zA-Z_-]+$/.test(golinkName)) {
+      alert('Golink name can only contain letters, underscores, and hyphens.');
+      return;
+    }
+
+    const golinkData = {
+      name: golinkName,
+      url: currentUrl
+    };
+
+    fetch('http://localhost:3030/golinks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(golinkData)
+    })
+    .then(response => {
+      if (response.ok) {
+        alert(`Golink "go/${golinkName}" created successfully!`);
+        addToRecentLinks(golinkName, currentUrl);
         window.close();
       } else {
-        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(input)}`;
-        chrome.tabs.create({ url: searchUrl });
-        window.close();
+        alert('Failed to create golink. Please try again.');
       }
+    })
+    .catch(error => {
+      console.error('Error creating golink:', error);
+      alert('Error creating golink. Please make sure the golink service is running.');
     });
   }
 
@@ -73,33 +102,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function showAddLinkForm() {
-    const name = prompt('Enter go link name:');
-    const url = prompt('Enter URL:');
-    
-    if (name && url) {
-      chrome.storage.sync.get(['golinks'], function(result) {
-        const golinks = result.golinks || {};
-        golinks[name] = url;
-        chrome.storage.sync.set({ golinks }, function() {
-          alert('Go link added successfully!');
-        });
-      });
-    }
-  }
-
-  function showManageLinks() {
-    chrome.storage.sync.get(['golinks'], function(result) {
-      const golinks = result.golinks || {};
-      const linksList = Object.entries(golinks)
-        .map(([name, url]) => `${name} -> ${url}`)
-        .join('\n');
-      
-      if (linksList) {
-        alert('Current go links:\n\n' + linksList);
-      } else {
-        alert('No go links found.');
-      }
-    });
-  }
 });

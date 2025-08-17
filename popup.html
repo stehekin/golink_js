@@ -3,29 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>golink</title>
+  <title>Add Golink</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>golink</h1>
+      <h1>Add Golink</h1>
     </div>
     
-    <div class="search-section">
-      <input type="text" id="searchInput" placeholder="Enter go link or search..." autocomplete="off">
-      <button id="goButton">Go</button>
+    <div class="form-section">
+      <form id="addGolinkForm">
+        <div class="input-group">
+          <label for="golinkName">Golink Name:</label>
+          <input type="text" id="golinkName" placeholder="Enter go link name (e.g., hello)" autocomplete="off" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="currentUrl">Current URL:</label>
+          <input type="text" id="currentUrl" readonly>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" id="createGolinkBtn" class="primary-btn">Create Golink</button>
+          <button type="button" id="cancelBtn" class="secondary-btn">Cancel</button>
+        </div>
+      </form>
     </div>
     
     <div class="links-section">
       <h3>Recent Links</h3>
       <div id="recentLinks" class="links-list">
       </div>
-    </div>
-    
-    <div class="actions">
-      <button id="addLinkBtn" class="action-btn">Add New Link</button>
-      <button id="manageLinkBtn" class="action-btn">Manage Links</button>
     </div>
   </div>
   
