@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Golinks</title>
+  <link rel="stylesheet" href="manage.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Manage Golinks</h1>
+      <a href="#" id="backLink" class="manage-link">← Back</a>
+    </div>
+    
+    <div class="loading" id="loading">Loading golinks...</div>
+    
+    <div class="golinks-section" id="golinksSection" style="display: none;">
+      <div class="golinks-list" id="golinksList">
+        <!-- Golinks will be populated here -->
+      </div>
+      
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <p>No golinks found. Click the extension icon to create your first golink.</p>
+      </div>
+    </div>
+    
+    <div class="error-message" id="errorMessage" style="display: none;">
+      <p>Failed to load golinks. Please make sure the golink service is running.</p>
+      <button class="secondary-btn" onclick="location.reload()">Retry</button>
+    </div>
+  </div>
+  
+  <!-- Edit Modal -->
+  <div class="modal-overlay" id="editModal" style="display: none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Edit Golink</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm">
+          <div class="input-group">
+            <label for="editGolinkName">Golink Name:</label>
+            <div class="input-with-prefix">
+              <span class="input-prefix">go/</span>
+              <input type="text" id="editGolinkName" readonly>
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label for="editGolinkUrl">Target URL:</label>
+            <input type="text" id="editGolinkUrl" required>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="primary-btn">Save Changes</button>
+            <button type="button" class="secondary-btn" id="cancelEdit">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script src="manage.js"></script>
+</body>
+</html>

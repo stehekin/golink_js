@@ -4,14 +4,20 @@ document.addEventListener('DOMContentLoaded', function() {
   const addGolinkForm = document.getElementById('addGolinkForm');
   const createGolinkBtn = document.getElementById('createGolinkBtn');
   const cancelBtn = document.getElementById('cancelBtn');
-  const recentLinksContainer = document.getElementById('recentLinks');
+  const manageGolinkLink = document.getElementById('manageGolinkLink');
 
   loadCurrentUrl();
-  loadRecentLinks();
 
   addGolinkForm.addEventListener('submit', handleCreateGolink);
   cancelBtn.addEventListener('click', function() {
     window.close();
+  });
+
+  manageGolinkLink.addEventListener('click', function(e) {
+    e.preventDefault();
+    chrome.tabs.create({
+      url: chrome.runtime.getURL('manage.html')
+    });
   });
 
   function loadCurrentUrl() {
@@ -53,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(async response => {
       if (response.ok) {
         alert(`Golink "go/${golinkName}" created successfully!`);
-        addToRecentLinks(`go/${golinkName}`, currentUrl);
         window.close();
       } else if (response.status === 409) {
         const errorData = await response.json();
@@ -86,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => {
       if (response.ok) {
         alert(`Golink "go/${golinkName}" updated successfully!`);
-        addToRecentLinks(`go/${golinkName}`, currentUrl);
         window.close();
       } else {
         alert('Failed to update golink. Please try again.');
@@ -98,41 +102,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function loadRecentLinks() {
-    chrome.storage.local.get(['recentLinks'], function(result) {
-      const recentLinks = result.recentLinks || [];
-      displayRecentLinks(recentLinks);
-    });
-  }
-
-  function displayRecentLinks(links) {
-    recentLinksContainer.innerHTML = '';
-    
-    links.slice(0, 5).forEach(link => {
-      const linkElement = document.createElement('div');
-      linkElement.className = 'link-item';
-      linkElement.innerHTML = `
-        <span class="link-name">${link.name}</span>
-        <span class="link-url">${link.url}</span>
-      `;
-      linkElement.addEventListener('click', function() {
-        chrome.tabs.create({ url: link.url });
-        window.close();
-      });
-      recentLinksContainer.appendChild(linkElement);
-    });
-  }
-
-  function addToRecentLinks(name, url) {
-    chrome.storage.local.get(['recentLinks'], function(result) {
-      let recentLinks = result.recentLinks || [];
-      
-      recentLinks = recentLinks.filter(link => link.name !== name);
-      recentLinks.unshift({ name, url, timestamp: Date.now() });
-      recentLinks = recentLinks.slice(0, 10);
-      
-      chrome.storage.local.set({ recentLinks });
-    });
-  }
 
 });
