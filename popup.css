@@ -25,6 +25,11 @@ body {
   color: #1a73e8;
 }
 
+.header-links {
+  display: flex;
+  gap: 8px;
+}
+
 .manage-link {
   font-size: 13px;
   color: #1a73e8;

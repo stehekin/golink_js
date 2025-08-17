@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const createGolinkBtn = document.getElementById('createGolinkBtn');
   const cancelBtn = document.getElementById('cancelBtn');
   const manageGolinkLink = document.getElementById('manageGolinkLink');
+  const configureLink = document.getElementById('configureLink');
 
   loadCurrentUrl();
 
@@ -18,6 +19,11 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.tabs.create({
       url: chrome.runtime.getURL('manage.html')
     });
+  });
+
+  configureLink.addEventListener('click', function(e) {
+    e.preventDefault();
+    chrome.runtime.openOptionsPage();
   });
 
   function loadCurrentUrl() {

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golink Configuration</title>
+  <link rel="stylesheet" href="popup.css">
+  <style>
+    body {
+      width: auto;
+      min-width: 600px;
+      padding: 24px;
+    }
+    .config-section {
+      margin-bottom: 24px;
+      padding: 20px;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      background-color: white;
+    }
+    .config-section h2 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      color: #1a73e8;
+    }
+    .config-option {
+      margin-bottom: 16px;
+    }
+    .config-option label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #5f6368;
+    }
+    .config-option input[type="url"] {
+      width: 100%;
+      max-width: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Golink Configuration</h1>
+    </div>
+    
+    <div class="config-section">
+      <h2>Service Settings</h2>
+      
+      <div class="config-option">
+        <label for="serviceUrl">Golink Service URL:</label>
+        <input type="url" id="serviceUrl" value="http://localhost:3030" placeholder="http://localhost:3030">
+        <p style="font-size: 12px; color: #5f6368; margin-top: 4px;">
+          The URL where your golink service is running
+        </p>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" id="saveSettings" class="primary-btn">Save Settings</button>
+        <button type="button" id="resetSettings" class="secondary-btn">Reset to Default</button>
+      </div>
+    </div>
+    
+    <div class="config-section">
+      <h2>About</h2>
+      <p>Golink Chrome Extension v1.0.0</p>
+      <p>Manage and access your go links with ease.</p>
+    </div>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html>
