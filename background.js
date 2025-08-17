@@ -1,5 +1,5 @@
 chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
-  const golinkMatch = details.url.match(/go\/([a-zA-Z_-]+)/);
+  const golinkMatch = details.url.match(/go\/([a-zA-Z0-9_-]+)/);
   if (details.frameId === 0 && golinkMatch) {
     const golinkName = golinkMatch[1];
     try {

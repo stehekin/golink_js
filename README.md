@@ -4,11 +4,11 @@ A Chrome extension that automatically redirects go links to their configured des
 
 ## Overview
 
-This extension intercepts navigation to URLs matching the pattern `go/[a-zA-Z_-]+` and redirects them to their configured target URLs by fetching from a local golink service.
+This extension intercepts navigation to URLs matching the pattern `go/[a-zA-Z0-9_-]+` and redirects them to their configured target URLs by fetching from a local golink service.
 
 ## Features
 
-- **Dynamic GoLink Support**: Works with any golink following the pattern `go/[a-zA-Z_-]+`
+- **Dynamic GoLink Support**: Works with any golink following the pattern `go/[a-zA-Z0-9_-]+`
 - **Automatic Redirection**: Seamlessly redirects golinks to their target URLs
 - **Fallback Handling**: Redirects to Google search if golink resolution fails
 - **Local Service Integration**: Connects to a local golink service running on `localhost:3030`
@@ -21,8 +21,10 @@ The extension supports golinks with the following pattern:
 - `go/team-wiki`
 - `go/bug_tracker`
 - `go/my-project`
+- `go/version2`
+- `go/test123`
 
-Pattern: `go/[a-zA-Z_-]+`
+Pattern: `go/[a-zA-Z0-9_-]+`
 
 ## Installation
 

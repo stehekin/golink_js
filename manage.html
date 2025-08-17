@@ -16,8 +16,20 @@
     <div class="loading" id="loading">Loading golinks...</div>
     
     <div class="golinks-section" id="golinksSection" style="display: none;">
+      <div class="golinks-stats" id="golinksStats" style="display: none;">
+        <p>Showing <span id="showingCount">0</span> of <span id="totalCount">0</span> golinks</p>
+      </div>
+      
       <div class="golinks-list" id="golinksList">
         <!-- Golinks will be populated here -->
+      </div>
+      
+      <div class="pagination-controls" id="paginationControls" style="display: none;">
+        <button class="pagination-btn" id="prevBtn" disabled>← Previous</button>
+        <span class="pagination-info">
+          Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
+        </span>
+        <button class="pagination-btn" id="nextBtn" disabled>Next →</button>
       </div>
       
       <div class="empty-state" id="emptyState" style="display: none;">

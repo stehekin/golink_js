@@ -11,8 +11,20 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeModal = document.getElementById('closeModal');
   const cancelEdit = document.getElementById('cancelEdit');
   const backLink = document.getElementById('backLink');
+  const golinksStats = document.getElementById('golinksStats');
+  const paginationControls = document.getElementById('paginationControls');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const currentPageSpan = document.getElementById('currentPage');
+  const totalPagesSpan = document.getElementById('totalPages');
+  const showingCountSpan = document.getElementById('showingCount');
+  const totalCountSpan = document.getElementById('totalCount');
 
   let currentEditingGolink = null;
+  let currentPage = 1;
+  const pageSize = 50;
+  let totalPages = 1;
+  let totalItems = 0;
 
   // Load golinks on page load
   loadGolinks();
@@ -28,6 +40,21 @@ document.addEventListener('DOMContentLoaded', function() {
     window.close();
   });
 
+  // Pagination event listeners
+  prevBtn.addEventListener('click', function() {
+    if (currentPage > 1) {
+      currentPage--;
+      loadGolinks();
+    }
+  });
+
+  nextBtn.addEventListener('click', function() {
+    if (currentPage < totalPages) {
+      currentPage++;
+      loadGolinks();
+    }
+  });
+
   // Close modal when clicking outside
   editModal.addEventListener('click', function(e) {
     if (e.target === editModal) {
@@ -39,24 +66,52 @@ document.addEventListener('DOMContentLoaded', function() {
     loading.style.display = 'block';
     golinksSection.style.display = 'none';
     errorMessage.style.display = 'none';
+    golinksStats.style.display = 'none';
+    paginationControls.style.display = 'none';
 
-    fetch('http://localhost:3030/golinks')
+    const url = `http://localhost:3030/golinks?page=${currentPage}&page_size=${pageSize}`;
+    
+    fetch(url)
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch golinks');
         }
         return response.json();
       })
-      .then(golinks => {
+      .then(response => {
         loading.style.display = 'none';
         golinksSection.style.display = 'block';
         
-        if (golinks.length === 0) {
+        // Handle both paginated and non-paginated responses for backward compatibility
+        let golinks, pagination;
+        if (Array.isArray(response)) {
+          // Non-paginated response (backward compatibility)
+          golinks = response;
+          pagination = {
+            page: 1,
+            page_size: response.length,
+            total_items: response.length,
+            total_pages: 1
+          };
+        } else {
+          // Paginated response
+          golinks = response.data;
+          pagination = response.pagination;
+        }
+        
+        totalItems = pagination.total_items;
+        totalPages = pagination.total_pages;
+        
+        if (totalItems === 0) {
           golinksList.innerHTML = '';
           emptyState.style.display = 'block';
+          golinksStats.style.display = 'none';
+          paginationControls.style.display = 'none';
         } else {
           emptyState.style.display = 'none';
           displayGolinks(golinks);
+          updatePaginationControls(pagination);
+          updateStats(golinks.length, totalItems);
         }
       })
       .catch(error => {
@@ -124,6 +179,8 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => {
       if (response.ok) {
         alert(`Golink "${golinkName}" deleted successfully!`);
+        // Reset to page 1 after deletion in case current page becomes empty
+        currentPage = 1;
         loadGolinks(); // Reload the list
       } else {
         alert('Failed to delete golink. Please try again.');
@@ -166,6 +223,28 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error('Error updating golink:', error);
       alert('Error updating golink. Please make sure the golink service is running.');
     });
+  }
+
+  function updatePaginationControls(pagination) {
+    currentPageSpan.textContent = pagination.page;
+    totalPagesSpan.textContent = pagination.total_pages;
+    
+    // Update button states
+    prevBtn.disabled = pagination.page <= 1;
+    nextBtn.disabled = pagination.page >= pagination.total_pages;
+    
+    // Show pagination controls only if there are multiple pages
+    if (pagination.total_pages > 1) {
+      paginationControls.style.display = 'flex';
+    } else {
+      paginationControls.style.display = 'none';
+    }
+  }
+
+  function updateStats(showingCount, totalCount) {
+    showingCountSpan.textContent = showingCount;
+    totalCountSpan.textContent = totalCount;
+    golinksStats.style.display = 'block';
   }
 
   function closeEditModal() {

@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    if (!/^[a-zA-Z_-]+$/.test(golinkName)) {
-      alert('Golink name can only contain letters, underscores, and hyphens.');
+    if (!/^[a-zA-Z0-9_-]+$/.test(golinkName)) {
+      alert('Golink name can only contain letters, numbers, underscores, and hyphens.');
       return;
     }
 
