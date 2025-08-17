@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const golinkData = {
-      name: golinkName,
+      short_link: `go/${golinkName}`,
       url: currentUrl
     };
 
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => {
       if (response.ok) {
         alert(`Golink "go/${golinkName}" created successfully!`);
-        addToRecentLinks(golinkName, currentUrl);
+        addToRecentLinks(`go/${golinkName}`, currentUrl);
         window.close();
       } else {
         alert('Failed to create golink. Please try again.');
