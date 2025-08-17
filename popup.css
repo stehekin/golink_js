@@ -54,9 +54,40 @@ body {
   box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
 }
 
-.input-group input[readonly] {
+.input-with-prefix {
+  display: flex;
+  align-items: center;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.input-with-prefix:focus-within {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+.input-prefix {
   background-color: #f8f9fa;
   color: #5f6368;
+  padding: 8px 8px 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border-right: 1px solid #dadce0;
+}
+
+.input-with-prefix input {
+  border: none;
+  padding: 8px 12px 8px 8px;
+  flex: 1;
+  font-size: 14px;
+  outline: none;
+  background: white;
+}
+
+.input-with-prefix input:focus {
+  border: none;
+  box-shadow: none;
 }
 
 .form-actions {

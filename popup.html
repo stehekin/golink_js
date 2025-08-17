@@ -16,12 +16,15 @@
       <form id="addGolinkForm">
         <div class="input-group">
           <label for="golinkName">Golink Name:</label>
-          <input type="text" id="golinkName" placeholder="Enter go link name (e.g., hello)" autocomplete="off" required>
+          <div class="input-with-prefix">
+            <span class="input-prefix">go/</span>
+            <input type="text" id="golinkName" placeholder="hello" autocomplete="off" required>
+          </div>
         </div>
         
         <div class="input-group">
           <label for="currentUrl">Current URL:</label>
-          <input type="text" id="currentUrl" readonly>
+          <input type="text" id="currentUrl">
         </div>
         
         <div class="form-actions">
