@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const manageGolinkLink = document.getElementById('manageGolinkLink');
   const configureLink = document.getElementById('configureLink');
 
+  async function getServiceUrl() {
+    return new Promise((resolve) => {
+      chrome.storage.sync.get(['serviceUrl'], function(result) {
+        resolve(result.serviceUrl || 'http://localhost:3030');
+      });
+    });
+  }
+
   loadCurrentUrl();
 
   addGolinkForm.addEventListener('submit', handleCreateGolink);
@@ -34,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function handleCreateGolink(e) {
+  async function handleCreateGolink(e) {
     e.preventDefault();
     
     const golinkName = golinkNameInput.value.trim();
@@ -55,7 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
       url: currentUrl
     };
 
-    fetch('http://localhost:3030/golinks', {
+    const serviceUrl = await getServiceUrl();
+    fetch(`${serviceUrl}/golinks`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,8 +95,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function updateExistingGolink(golinkName, currentUrl) {
-    fetch(`http://localhost:3030/golinks/go/${golinkName}`, {
+  async function updateExistingGolink(golinkName, currentUrl) {
+    const serviceUrl = await getServiceUrl();
+    fetch(`${serviceUrl}/golinks/go/${golinkName}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

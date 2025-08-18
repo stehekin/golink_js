@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
   let totalPages = 1;
   let totalItems = 0;
 
+  async function getServiceUrl() {
+    return new Promise((resolve) => {
+      chrome.storage.sync.get(['serviceUrl'], function(result) {
+        resolve(result.serviceUrl || 'http://localhost:3030');
+      });
+    });
+  }
+
   // Load golinks on page load
   loadGolinks();
 
@@ -62,14 +70,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  function loadGolinks() {
+  async function loadGolinks() {
     loading.style.display = 'block';
     golinksSection.style.display = 'none';
     errorMessage.style.display = 'none';
     golinksStats.style.display = 'none';
     paginationControls.style.display = 'none';
 
-    const url = `http://localhost:3030/golinks?page=${currentPage}&page_size=${pageSize}`;
+    const serviceUrl = await getServiceUrl();
+    const url = `${serviceUrl}/golinks?page=${currentPage}&page_size=${pageSize}`;
     
     fetch(url)
       .then(response => {
@@ -172,8 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  function deleteGolink(golinkName) {
-    fetch(`http://localhost:3030/golinks/${golinkName}`, {
+  async function deleteGolink(golinkName) {
+    const serviceUrl = await getServiceUrl();
+    fetch(`${serviceUrl}/golinks/${golinkName}`, {
       method: 'DELETE'
     })
     .then(response => {
@@ -192,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function handleSaveEdit(e) {
+  async function handleSaveEdit(e) {
     e.preventDefault();
     
     const newUrl = editGolinkUrl.value.trim();
@@ -203,7 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const golinkName = currentEditingGolink.short_link;
     
-    fetch(`http://localhost:3030/golinks/${golinkName}`, {
+    const serviceUrl = await getServiceUrl();
+    fetch(`${serviceUrl}/golinks/${golinkName}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

@@ -25,12 +25,21 @@ function normalizeUrl(url) {
   }
 }
 
+async function getServiceUrl() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(['serviceUrl'], function(result) {
+      resolve(result.serviceUrl || 'http://localhost:3030');
+    });
+  });
+}
+
 chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
   const golinkMatch = details.url.match(/go\/([a-zA-Z0-9_-]+)/);
   if (details.frameId === 0 && golinkMatch) {
     const golinkName = golinkMatch[1];
     try {
-      const response = await fetch(`http://localhost:3030/golinks/go/${golinkName}`);
+      const serviceUrl = await getServiceUrl();
+      const response = await fetch(`${serviceUrl}/golinks/go/${golinkName}`);
       const data = await response.json();
 
       if (response.ok && data.url) {
