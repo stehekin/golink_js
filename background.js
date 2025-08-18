@@ -9,11 +9,13 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
       if (response.ok && data.url) {
         chrome.tabs.update(details.tabId, { url: data.url });
       } else {
-        chrome.tabs.update(details.tabId, { url: "https://www.google.com" });
+        const notFoundUrl = chrome.runtime.getURL(`404.html?golink=${encodeURIComponent(golinkName)}`);
+        chrome.tabs.update(details.tabId, { url: notFoundUrl });
       }
     } catch (error) {
       console.error("Error fetching golink:", error);
-      chrome.tabs.update(details.tabId, { url: "https://www.google.com" });
+      const notFoundUrl = chrome.runtime.getURL(`404.html?golink=${encodeURIComponent(golinkName)}`);
+      chrome.tabs.update(details.tabId, { url: notFoundUrl });
     }
   }
 });
