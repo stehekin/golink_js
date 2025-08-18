@@ -26,13 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let totalPages = 1;
   let totalItems = 0;
 
-  async function getServiceUrl() {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get(['serviceUrl'], function(result) {
-        resolve(result.serviceUrl || 'http://localhost:3030');
-      });
-    });
-  }
+  // Storage manager will be included via script tag in manage.html
 
   // Load golinks on page load
   loadGolinks();
@@ -77,57 +71,34 @@ document.addEventListener('DOMContentLoaded', function() {
     golinksStats.style.display = 'none';
     paginationControls.style.display = 'none';
 
-    const serviceUrl = await getServiceUrl();
-    const url = `${serviceUrl}/golinks?page=${currentPage}&page_size=${pageSize}`;
-    
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch golinks');
-        }
-        return response.json();
-      })
-      .then(response => {
-        loading.style.display = 'none';
-        golinksSection.style.display = 'block';
-        
-        // Handle both paginated and non-paginated responses for backward compatibility
-        let golinks, pagination;
-        if (Array.isArray(response)) {
-          // Non-paginated response (backward compatibility)
-          golinks = response;
-          pagination = {
-            page: 1,
-            page_size: response.length,
-            total_items: response.length,
-            total_pages: 1
-          };
-        } else {
-          // Paginated response
-          golinks = response.data;
-          pagination = response.pagination;
-        }
-        
-        totalItems = pagination.total_items;
-        totalPages = pagination.total_pages;
-        
-        if (totalItems === 0) {
-          golinksList.innerHTML = '';
-          emptyState.style.display = 'block';
-          golinksStats.style.display = 'none';
-          paginationControls.style.display = 'none';
-        } else {
-          emptyState.style.display = 'none';
-          displayGolinks(golinks);
-          updatePaginationControls(pagination);
-          updateStats(golinks.length, totalItems);
-        }
-      })
-      .catch(error => {
-        console.error('Error loading golinks:', error);
-        loading.style.display = 'none';
-        errorMessage.style.display = 'block';
-      });
+    try {
+      const response = await storageManager.getGolinks(currentPage, pageSize);
+      
+      loading.style.display = 'none';
+      golinksSection.style.display = 'block';
+      
+      const golinks = response.data;
+      const pagination = response.pagination;
+      
+      totalItems = pagination.total_items;
+      totalPages = pagination.total_pages;
+      
+      if (totalItems === 0) {
+        golinksList.innerHTML = '';
+        emptyState.style.display = 'block';
+        golinksStats.style.display = 'none';
+        paginationControls.style.display = 'none';
+      } else {
+        emptyState.style.display = 'none';
+        displayGolinks(golinks);
+        updatePaginationControls(pagination);
+        updateStats(golinks.length, totalItems);
+      }
+    } catch (error) {
+      console.error('Error loading golinks:', error);
+      loading.style.display = 'none';
+      errorMessage.style.display = 'block';
+    }
   }
 
   function displayGolinks(golinks) {
@@ -182,24 +153,16 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function deleteGolink(golinkName) {
-    const serviceUrl = await getServiceUrl();
-    fetch(`${serviceUrl}/golinks/${golinkName}`, {
-      method: 'DELETE'
-    })
-    .then(response => {
-      if (response.ok) {
-        alert(`Golink "${golinkName}" deleted successfully!`);
-        // Reset to page 1 after deletion in case current page becomes empty
-        currentPage = 1;
-        loadGolinks(); // Reload the list
-      } else {
-        alert('Failed to delete golink. Please try again.');
-      }
-    })
-    .catch(error => {
+    try {
+      await storageManager.deleteGolink(golinkName);
+      alert(`Golink "${golinkName}" deleted successfully!`);
+      // Reset to page 1 after deletion in case current page becomes empty
+      currentPage = 1;
+      loadGolinks(); // Reload the list
+    } catch (error) {
       console.error('Error deleting golink:', error);
-      alert('Error deleting golink. Please make sure the golink service is running.');
-    });
+      alert('Error deleting golink. Please check your connection or try again.');
+    }
   }
 
   async function handleSaveEdit(e) {
@@ -213,27 +176,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const golinkName = currentEditingGolink.short_link;
     
-    const serviceUrl = await getServiceUrl();
-    fetch(`${serviceUrl}/golinks/${golinkName}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ url: newUrl })
-    })
-    .then(response => {
-      if (response.ok) {
-        alert(`Golink "${golinkName}" updated successfully!`);
-        closeEditModal();
-        loadGolinks(); // Reload the list
-      } else {
-        alert('Failed to update golink. Please try again.');
-      }
-    })
-    .catch(error => {
+    try {
+      await storageManager.updateGolink(golinkName, { url: newUrl });
+      alert(`Golink "${golinkName}" updated successfully!`);
+      closeEditModal();
+      loadGolinks(); // Reload the list
+    } catch (error) {
       console.error('Error updating golink:', error);
-      alert('Error updating golink. Please make sure the golink service is running.');
-    });
+      alert('Error updating golink. Please check your connection or try again.');
+    }
   }
 
   function updatePaginationControls(pagination) {

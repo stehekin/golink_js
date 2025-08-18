@@ -7,13 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const manageGolinkLink = document.getElementById('manageGolinkLink');
   const configureLink = document.getElementById('configureLink');
 
-  async function getServiceUrl() {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get(['serviceUrl'], function(result) {
-        resolve(result.serviceUrl || 'http://localhost:3030');
-      });
-    });
-  }
+  // Storage manager will be included via script tag in popup.html
 
   loadCurrentUrl();
 
@@ -63,59 +57,32 @@ document.addEventListener('DOMContentLoaded', function() {
       url: currentUrl
     };
 
-    const serviceUrl = await getServiceUrl();
-    fetch(`${serviceUrl}/golinks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(golinkData)
-    })
-    .then(async response => {
-      if (response.ok) {
-        alert(`Golink "go/${golinkName}" created successfully!`);
-        window.close();
-      } else if (response.status === 409) {
-        const errorData = await response.json();
-        if (errorData.error === 'Golink already exists') {
-          const shouldOverwrite = confirm(`Golink "go/${golinkName}" already exists. Do you want to overwrite it?`);
-          if (shouldOverwrite) {
-            updateExistingGolink(golinkName, currentUrl);
-          }
-        } else {
-          alert('Failed to create golink. Please try again.');
+    try {
+      await storageManager.createGolink(golinkData);
+      alert(`Golink "go/${golinkName}" created successfully!`);
+      window.close();
+    } catch (error) {
+      if (error.status === 409 && error.error === 'Golink already exists') {
+        const shouldOverwrite = confirm(`Golink "go/${golinkName}" already exists. Do you want to overwrite it?`);
+        if (shouldOverwrite) {
+          updateExistingGolink(golinkName, currentUrl);
         }
       } else {
-        alert('Failed to create golink. Please try again.');
+        console.error('Error creating golink:', error);
+        alert('Error creating golink. Please check your connection or try again.');
       }
-    })
-    .catch(error => {
-      console.error('Error creating golink:', error);
-      alert('Error creating golink. Please make sure the golink service is running.');
-    });
+    }
   }
 
   async function updateExistingGolink(golinkName, currentUrl) {
-    const serviceUrl = await getServiceUrl();
-    fetch(`${serviceUrl}/golinks/go/${golinkName}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ url: currentUrl })
-    })
-    .then(response => {
-      if (response.ok) {
-        alert(`Golink "go/${golinkName}" updated successfully!`);
-        window.close();
-      } else {
-        alert('Failed to update golink. Please try again.');
-      }
-    })
-    .catch(error => {
+    try {
+      await storageManager.updateGolink(`go/${golinkName}`, { url: currentUrl });
+      alert(`Golink "go/${golinkName}" updated successfully!`);
+      window.close();
+    } catch (error) {
       console.error('Error updating golink:', error);
-      alert('Error updating golink. Please make sure the golink service is running.');
-    });
+      alert('Error updating golink. Please check your connection or try again.');
+    }
   }
 
 

@@ -45,9 +45,26 @@
     </div>
     
     <div class="config-section">
-      <h2>Service Settings</h2>
+      <h2>Storage Settings</h2>
       
       <div class="config-option">
+        <label>Storage Mode:</label>
+        <div style="margin-top: 8px;">
+          <label style="display: flex; align-items: center; margin-bottom: 8px; font-weight: normal;">
+            <input type="radio" id="storageService" name="storageMode" value="service" style="margin-right: 8px;">
+            Use Golink Service
+          </label>
+          <label style="display: flex; align-items: center; margin-bottom: 8px; font-weight: normal;">
+            <input type="radio" id="storageExtension" name="storageMode" value="extension" style="margin-right: 8px;">
+            Use Extension Storage (Offline)
+          </label>
+        </div>
+        <p style="font-size: 12px; color: #5f6368; margin-top: 4px;">
+          Choose how golinks are stored and managed
+        </p>
+      </div>
+      
+      <div class="config-option" id="serviceUrlSection">
         <label for="serviceUrl">Golink Service URL:</label>
         <input type="url" id="serviceUrl" value="http://localhost:3030" placeholder="http://localhost:3030">
         <p style="font-size: 12px; color: #5f6368; margin-top: 4px;">
