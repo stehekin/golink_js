@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       setTimeout(() => {
         saveSettingsBtn.textContent = originalText;
-        saveSettingsBtn.style.backgroundColor = '#1a73e8';
+        saveSettingsBtn.style.backgroundColor = '#4f46e5';
       }, 2000);
     });
   }

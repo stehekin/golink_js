@@ -198,17 +198,19 @@ body {
 .action-btn {
   flex: 1;
   padding: 8px 12px;
-  background-color: #f8f9fa;
-  color: #1a73e8;
-  border: 1px solid #dadce0;
-  border-radius: 4px;
+  background-color: #f8fafc;
+  color: #4f46e5;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .action-btn:hover {
-  background-color: #f1f3f4;
+  background-color: #f1f5f9;
+  border-color: #d1d5db;
+  color: #3730a3;
 }
 
 /* Manage page styles */
@@ -245,7 +247,7 @@ body {
 
 .golink-name {
   font-weight: 500;
-  color: #1a73e8;
+  color: #4f46e5;
   margin-bottom: 4px;
   font-size: 14px;
 }
@@ -284,7 +286,7 @@ body {
 }
 
 .empty-state a {
-  color: #1a73e8;
+  color: #4f46e5;
   text-decoration: none;
 }
 
@@ -356,7 +358,7 @@ body {
 }
 
 .modal-close:hover {
-  background-color: #f1f3f4;
+  background-color: #f1f5f9;
   border-radius: 50%;
 }
 
