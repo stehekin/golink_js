@@ -1,5 +1,17 @@
 importScripts('storage-manager.js');
 
+chrome.runtime.onInstalled.addListener(async (details) => {
+  if (details.reason === 'install') {
+    // Check if extension has been configured
+    const result = await chrome.storage.sync.get(['serviceUrl', 'storageMode']);
+    
+    // If no configuration exists, open options page
+    if (!result.serviceUrl && !result.storageMode) {
+      chrome.tabs.create({ url: chrome.runtime.getURL('options.html') });
+    }
+  }
+});
+
 function normalizeUrl(url) {
   if (!url || typeof url !== 'string') {
     return null;
