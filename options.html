@@ -56,7 +56,8 @@
       font-size: 14px;
       letter-spacing: 0.01em;
     }
-    .config-option input[type="url"] {
+    .config-option input[type="url"],
+    .config-option input[type="password"] {
       width: 100%;
       max-width: 400px;
       padding: 12px 16px;
@@ -67,7 +68,8 @@
       color: #111827;
       transition: border-color 0.2s ease;
     }
-    .config-option input[type="url"]:focus {
+    .config-option input[type="url"]:focus,
+    .config-option input[type="password"]:focus {
       outline: none;
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -152,6 +154,14 @@
         <input type="url" id="serviceUrl" value="http://localhost:3030" placeholder="http://localhost:3030">
         <p style="font-size: 12px; color: #5f6368; margin-top: 4px;">
           The URL where your golink service is running
+        </p>
+      </div>
+      
+      <div class="config-option" id="authTokenSection">
+        <label for="authToken">Authentication Token (Optional):</label>
+        <input type="password" id="authToken" placeholder="Enter your service auth token">
+        <p style="font-size: 12px; color: #5f6368; margin-top: 4px;">
+          Leave empty if your service doesn't require authentication
         </p>
       </div>
       

@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
   const serviceUrlInput = document.getElementById('serviceUrl');
+  const authTokenInput = document.getElementById('authToken');
   const saveSettingsBtn = document.getElementById('saveSettings');
   const resetSettingsBtn = document.getElementById('resetSettings');
   const storageServiceRadio = document.getElementById('storageService');
   const storageExtensionRadio = document.getElementById('storageExtension');
   const serviceUrlSection = document.getElementById('serviceUrlSection');
+  const authTokenSection = document.getElementById('authTokenSection');
 
   // Load saved settings
   loadSettings();
@@ -16,9 +18,13 @@ document.addEventListener('DOMContentLoaded', function() {
   storageExtensionRadio.addEventListener('change', updateServiceUrlVisibility);
 
   function loadSettings() {
-    chrome.storage.sync.get(['serviceUrl', 'storageMode'], function(result) {
+    chrome.storage.sync.get(['serviceUrl', 'storageMode', 'authToken'], function(result) {
       if (result.serviceUrl) {
         serviceUrlInput.value = result.serviceUrl;
+      }
+      
+      if (result.authToken) {
+        authTokenInput.value = result.authToken;
       }
       
       // Set storage mode (default to 'extension' if not set)
@@ -35,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function saveSettings() {
     const serviceUrl = serviceUrlInput.value.trim();
+    const authToken = authTokenInput.value.trim();
     const storageMode = storageServiceRadio.checked ? 'service' : 'extension';
     
     // Validate service URL only if service mode is selected
@@ -47,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (storageMode === 'service') {
       settingsToSave.serviceUrl = serviceUrl;
+      settingsToSave.authToken = authToken; // Save auth token even if empty
     }
 
     chrome.storage.sync.set(settingsToSave, function() {
@@ -66,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (confirm('Reset all settings to default values?')) {
       chrome.storage.sync.clear(function() {
         serviceUrlInput.value = 'http://localhost:3030';
+        authTokenInput.value = '';
         storageServiceRadio.checked = false;
         storageExtensionRadio.checked = true;
         updateServiceUrlVisibility();
@@ -77,8 +86,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateServiceUrlVisibility() {
     if (storageServiceRadio.checked) {
       serviceUrlSection.style.display = 'block';
+      authTokenSection.style.display = 'block';
     } else {
       serviceUrlSection.style.display = 'none';
+      authTokenSection.style.display = 'none';
     }
   }
 });

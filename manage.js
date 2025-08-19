@@ -110,8 +110,12 @@ document.addEventListener('DOMContentLoaded', function() {
       
       golinkItem.innerHTML = `
         <div class="golink-info">
-          <div class="golink-name">${golink.short_link}</div>
-          <div class="golink-url">${golink.url}</div>
+          <div class="golink-name">
+            <a href="${golink.url}" target="_blank" rel="noopener noreferrer" class="golink-link" title="Click to visit ${golink.url}">${golink.short_link}</a>
+          </div>
+          <div class="golink-url">
+            <a href="${golink.url}" target="_blank" rel="noopener noreferrer" class="golink-url-link" title="Click to visit ${golink.url}">${golink.url}</a>
+          </div>
         </div>
         <div class="golink-actions">
           <button class="action-btn edit-btn" data-golink='${JSON.stringify(golink)}'>Edit</button>

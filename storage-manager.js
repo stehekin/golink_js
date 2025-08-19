@@ -16,6 +16,28 @@ class StorageManager {
     });
   }
 
+  async getAuthToken() {
+    return new Promise((resolve) => {
+      chrome.storage.sync.get(['authToken'], function(result) {
+        const authToken = result.authToken || '';
+        resolve(authToken);
+      });
+    });
+  }
+
+  async getAuthHeaders() {
+    const authToken = await this.getAuthToken();
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    
+    return headers;
+  }
+
   async getStorageMode() {
     return new Promise((resolve) => {
       chrome.storage.sync.get(['storageMode'], function(result) {
@@ -42,9 +64,13 @@ class StorageManager {
 
   async getGolinksFromService(page, pageSize) {
     const serviceUrl = await this.getServiceUrl();
+    const headers = await this.getAuthHeaders();
     const url = `${serviceUrl}/golinks?page=${page}&page_size=${pageSize}`;
     
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: headers
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch golinks from service');
     }
@@ -104,7 +130,11 @@ class StorageManager {
 
   async getGolinkFromService(golinkName) {
     const serviceUrl = await this.getServiceUrl();
-    const response = await fetch(`${serviceUrl}/golinks/go/${golinkName}`);
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(`${serviceUrl}/golinks/go/${golinkName}`, {
+      method: 'GET',
+      headers: headers
+    });
     
     if (!response.ok) {
       throw new Error('Golink not found');
@@ -140,11 +170,10 @@ class StorageManager {
 
   async createGolinkInService(golinkData) {
     const serviceUrl = await this.getServiceUrl();
+    const headers = await this.getAuthHeaders();
     const response = await fetch(`${serviceUrl}/golinks`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(golinkData)
     });
     
@@ -191,11 +220,10 @@ class StorageManager {
 
   async updateGolinkInService(golinkName, updateData) {
     const serviceUrl = await this.getServiceUrl();
+    const headers = await this.getAuthHeaders();
     const response = await fetch(`${serviceUrl}/golinks/${golinkName}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(updateData)
     });
     
@@ -241,8 +269,10 @@ class StorageManager {
 
   async deleteGolinkFromService(golinkName) {
     const serviceUrl = await this.getServiceUrl();
+    const headers = await this.getAuthHeaders();
     const response = await fetch(`${serviceUrl}/golinks/${golinkName}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: headers
     });
     
     if (!response.ok) {
