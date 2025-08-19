@@ -19,7 +19,7 @@ class StorageManager {
   async getStorageMode() {
     return new Promise((resolve) => {
       chrome.storage.sync.get(['storageMode'], function(result) {
-        const storageMode = result.storageMode || 'service';
+        const storageMode = result.storageMode || 'extension';
         resolve(storageMode);
       });
     });

@@ -8,33 +8,112 @@
   <style>
     body {
       width: auto;
-      min-width: 600px;
-      padding: 24px;
+      min-width: 640px;
+      padding: 32px;
+      background-color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: #212529;
+      line-height: 1.6;
+    }
+    .container {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e5e7eb;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .header h1 {
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 28px;
+      margin-bottom: 8px;
+      letter-spacing: -0.025em;
     }
     .config-section {
-      margin-bottom: 24px;
-      padding: 20px;
-      border: 1px solid #dadce0;
+      margin-bottom: 32px;
+      padding: 28px;
+      border: 1px solid #e5e7eb;
       border-radius: 8px;
-      background-color: white;
+      background-color: #f8fafc;
     }
     .config-section h2 {
-      margin: 0 0 16px 0;
-      font-size: 18px;
-      color: #1a73e8;
+      margin: 0 0 20px 0;
+      font-size: 20px;
+      color: #4f46e5;
+      font-weight: 700;
+      letter-spacing: -0.01em;
     }
     .config-option {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     .config-option label {
       display: block;
       margin-bottom: 8px;
-      font-weight: 500;
-      color: #5f6368;
+      font-weight: 600;
+      color: #374151;
+      font-size: 14px;
+      letter-spacing: 0.01em;
     }
     .config-option input[type="url"] {
       width: 100%;
       max-width: 400px;
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #ffffff;
+      color: #111827;
+      transition: border-color 0.2s ease;
+    }
+    .config-option input[type="url"]:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    .config-option input[type="radio"] {
+      margin-right: 8px;
+      transform: scale(1.1);
+      accent-color: #4f46e5;
+    }
+    .config-option p {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    .form-actions .primary-btn {
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      letter-spacing: 0.025em;
+    }
+    .form-actions .primary-btn:hover {
+      background-color: #3730a3;
+    }
+    .form-actions .secondary-btn {
+      background-color: #f8fafc;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.025em;
+    }
+    .form-actions .secondary-btn:hover {
+      background-color: #f1f5f9;
+      border-color: #d1d5db;
+      color: #1f2937;
     }
   </style>
 </head>
@@ -51,17 +130,50 @@
         <label>Storage Mode:</label>
         <div style="margin-top: 8px;">
           <label style="display: flex; align-items: center; margin-bottom: 8px; font-weight: normal;">
-            <input type="radio" id="storageService" name="storageMode" value="service" style="margin-right: 8px;">
-            Use Golink Service
+            <input type="radio" id="storageExtension" name="storageMode" value="extension" style="margin-right: 8px;" checked>
+            Local Storage
           </label>
           <label style="display: flex; align-items: center; margin-bottom: 8px; font-weight: normal;">
-            <input type="radio" id="storageExtension" name="storageMode" value="extension" style="margin-right: 8px;">
-            Use Extension Storage (Offline)
+            <input type="radio" id="storageService" name="storageMode" value="service" style="margin-right: 8px;">
+            Storage managed by <a href="https://github.com/stehekin/golink_service" target="_blank" rel="noopener noreferrer">Golink Service</a>
           </label>
         </div>
         <p style="font-size: 12px; color: #5f6368; margin-top: 4px;">
           Choose how golinks are stored and managed
         </p>
+        <div style="margin-top: 16px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px; color: #6b7280;">
+            <thead>
+              <tr style="background-color: #f8fafc;">
+                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: left; font-weight: 600;">Storage Option</th>
+                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: left; font-weight: 600;">Pros</th>
+                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: left; font-weight: 600;">Cons</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight: 500;">Local Storage</td>
+                <td style="padding: 8px; border: 1px solid #e5e7eb; color: #059669;">
+                  ✓ Works offline<br>
+                  ✓ No setup required
+                </td>
+                <td style="padding: 8px; border: 1px solid #e5e7eb; color: #dc2626;">
+                  ✗ Not shared across devices
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight: 500;">Golink Service</td>
+                <td style="padding: 8px; border: 1px solid #e5e7eb; color: #059669;">
+                  ✓ Shared across devices and users<br>
+                  ✓ Centralized management
+                </td>
+                <td style="padding: 8px; border: 1px solid #e5e7eb; color: #dc2626;">
+                  ✗ Requires service setup
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       
       <div class="config-option" id="serviceUrlSection">

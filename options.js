@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
         serviceUrlInput.value = result.serviceUrl;
       }
       
-      // Set storage mode (default to 'service' if not set)
-      const storageMode = result.storageMode || 'service';
+      // Set storage mode (default to 'extension' if not set)
+      const storageMode = result.storageMode || 'extension';
       if (storageMode === 'service') {
         storageServiceRadio.checked = true;
       } else {
@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (confirm('Reset all settings to default values?')) {
       chrome.storage.sync.clear(function() {
         serviceUrlInput.value = 'http://localhost:3030';
-        storageServiceRadio.checked = true;
-        storageExtensionRadio.checked = false;
+        storageServiceRadio.checked = false;
+        storageExtensionRadio.checked = true;
         updateServiceUrlVisibility();
         alert('Settings reset to default values');
       });

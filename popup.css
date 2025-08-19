@@ -1,28 +1,34 @@
 body {
-  width: 350px;
+  width: 380px;
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
+  color: #212529;
+  line-height: 1.5;
 }
 
 .container {
-  padding: 16px;
+  padding: 24px;
+  background: #ffffff;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1a73e8;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.025em;
 }
 
 .header-links {
@@ -31,79 +37,108 @@ body {
 }
 
 .manage-link {
-  font-size: 13px;
-  color: #1a73e8;
+  font-size: 12px;
+  color: #4f46e5;
   text-decoration: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  letter-spacing: 0.01em;
 }
 
 .manage-link:hover {
-  background-color: #f1f3f4;
-  text-decoration: underline;
+  background-color: #f1f5f9;
+  border-color: #d1d5db;
+  color: #3730a3;
+  text-decoration: none;
+}
+
+.icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+}
+
+.icon-link svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
 .form-section {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .input-group {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .input-group label {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   font-size: 13px;
-  font-weight: 500;
-  color: #5f6368;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.01em;
 }
 
 .input-group input {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #dadce0;
-  border-radius: 4px;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
   font-size: 14px;
   outline: none;
   box-sizing: border-box;
+  background: #ffffff;
+  color: #111827;
+  transition: border-color 0.2s ease;
 }
 
 .input-group input:focus {
-  border-color: #1a73e8;
-  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 .input-with-prefix {
   display: flex;
   align-items: center;
-  border: 1px solid #dadce0;
-  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
   overflow: hidden;
+  background: #ffffff;
 }
 
 .input-with-prefix:focus-within {
-  border-color: #1a73e8;
-  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 .input-prefix {
-  background-color: #f8f9fa;
-  color: #5f6368;
-  padding: 8px 8px 8px 12px;
+  background-color: #f8fafc;
+  color: #6b7280;
+  padding: 12px 12px 12px 14px;
   font-size: 14px;
-  font-weight: 500;
-  border-right: 1px solid #dadce0;
+  font-weight: 600;
+  border-right: 1px solid #e5e7eb;
+  letter-spacing: 0.025em;
 }
 
 .input-with-prefix input {
   border: none;
-  padding: 8px 12px 8px 8px;
+  padding: 12px 14px 12px 12px;
   flex: 1;
   font-size: 14px;
   outline: none;
-  background: white;
+  background: transparent;
+  color: #111827;
 }
 
 .input-with-prefix input:focus {
@@ -113,40 +148,45 @@ body {
 
 .form-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 16px;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .primary-btn {
   flex: 1;
-  padding: 10px 16px;
-  background-color: #1a73e8;
+  padding: 12px 20px;
+  background-color: #4f46e5;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
+  letter-spacing: 0.025em;
 }
 
 .primary-btn:hover {
-  background-color: #1557b0;
+  background-color: #3730a3;
 }
 
 .secondary-btn {
-  padding: 10px 16px;
-  background-color: #f8f9fa;
-  color: #5f6368;
-  border: 1px solid #dadce0;
-  border-radius: 4px;
+  padding: 12px 20px;
+  background-color: #f8fafc;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  letter-spacing: 0.025em;
 }
 
 .secondary-btn:hover {
-  background-color: #f1f3f4;
+  background-color: #f1f5f9;
+  border-color: #d1d5db;
+  color: #1f2937;
 }
 
 
