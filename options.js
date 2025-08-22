@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const storageExtensionRadio = document.getElementById('storageExtension');
   const serviceUrlSection = document.getElementById('serviceUrlSection');
   const authTokenSection = document.getElementById('authTokenSection');
+  const cacheManagementSection = document.getElementById('cacheManagementSection');
+  const clearCacheBtn = document.getElementById('clearCache');
 
   // Load saved settings
   loadSettings();
@@ -16,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
   resetSettingsBtn.addEventListener('click', resetSettings);
   storageServiceRadio.addEventListener('change', updateServiceUrlVisibility);
   storageExtensionRadio.addEventListener('change', updateServiceUrlVisibility);
+  clearCacheBtn.addEventListener('click', clearUrlCache);
 
   function loadSettings() {
     chrome.storage.sync.get(['serviceUrl', 'storageMode', 'authToken'], function(result) {
@@ -83,13 +86,36 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
+  async function clearUrlCache() {
+    if (confirm('Clear all cached URLs? This will force fresh lookups for all golinks.')) {
+      try {
+        await storageManager.clearUrlCache();
+        
+        // Show success message
+        const originalText = clearCacheBtn.textContent;
+        clearCacheBtn.textContent = 'Cache Cleared!';
+        clearCacheBtn.style.backgroundColor = '#34a853';
+        
+        setTimeout(() => {
+          clearCacheBtn.textContent = originalText;
+          clearCacheBtn.style.backgroundColor = '';
+        }, 2000);
+      } catch (error) {
+        console.error('Error clearing cache:', error);
+        alert('Error clearing cache. Please try again.');
+      }
+    }
+  }
+
   function updateServiceUrlVisibility() {
     if (storageServiceRadio.checked) {
       serviceUrlSection.style.display = 'block';
       authTokenSection.style.display = 'block';
+      cacheManagementSection.style.display = 'block';
     } else {
       serviceUrlSection.style.display = 'none';
       authTokenSection.style.display = 'none';
+      cacheManagementSection.style.display = 'none';
     }
   }
 });

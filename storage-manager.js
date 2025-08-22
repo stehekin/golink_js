@@ -52,6 +52,48 @@ class StorageManager {
     return storageMode === 'service';
   }
 
+  async getCachedUrl(golinkName) {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(['urlCache'], function(result) {
+        const urlCache = result.urlCache || {};
+        const cachedUrl = urlCache[golinkName];
+        resolve(cachedUrl || null);
+      });
+    });
+  }
+
+  async setCachedUrl(golinkName, url) {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(['urlCache'], function(result) {
+        const urlCache = result.urlCache || {};
+        urlCache[golinkName] = url;
+        chrome.storage.local.set({ urlCache: urlCache }, function() {
+          resolve();
+        });
+      });
+    });
+  }
+
+  async clearUrlCache() {
+    return new Promise((resolve) => {
+      chrome.storage.local.set({ urlCache: {} }, function() {
+        resolve();
+      });
+    });
+  }
+
+  async removeCachedUrl(golinkName) {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(['urlCache'], function(result) {
+        const urlCache = result.urlCache || {};
+        delete urlCache[golinkName];
+        chrome.storage.local.set({ urlCache: urlCache }, function() {
+          resolve();
+        });
+      });
+    });
+  }
+
   async getGolinks(page = 1, pageSize = 50) {
     const useService = await this.shouldUseService();
     
@@ -129,6 +171,11 @@ class StorageManager {
   }
 
   async getGolinkFromService(golinkName) {
+    const cachedUrl = await this.getCachedUrl(golinkName);
+    if (cachedUrl) {
+      return { url: cachedUrl };
+    }
+
     const serviceUrl = await this.getServiceUrl();
     const headers = await this.getAuthHeaders();
     const response = await fetch(`${serviceUrl}/golinks/go/${golinkName}`, {
@@ -140,7 +187,13 @@ class StorageManager {
       throw new Error('Golink not found');
     }
     
-    return response.json();
+    const data = await response.json();
+    
+    if (data && data.url) {
+      await this.setCachedUrl(golinkName, data.url);
+    }
+    
+    return data;
   }
 
   async getGolinkFromExtensionStorage(golinkName) {
@@ -231,6 +284,11 @@ class StorageManager {
       throw new Error('Failed to update golink');
     }
     
+    // Clear cache for updated golink
+    // Extract the name part if golinkName includes "go/" prefix
+    const nameOnly = golinkName.startsWith('go/') ? golinkName.substring(3) : golinkName;
+    await this.removeCachedUrl(nameOnly);
+    
     return response.json();
   }
 
@@ -278,6 +336,11 @@ class StorageManager {
     if (!response.ok) {
       throw new Error('Failed to delete golink');
     }
+    
+    // Clear cache for deleted golink
+    // Extract the name part if golinkName includes "go/" prefix
+    const nameOnly = golinkName.startsWith('go/') ? golinkName.substring(3) : golinkName;
+    await this.removeCachedUrl(nameOnly);
     
     return true;
   }
